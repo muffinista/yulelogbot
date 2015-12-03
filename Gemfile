@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem "chatterbot", :git => "git://github.com/muffinista/chatterbot.git"
+gem "chatterbot", "~> 1.0.0"
 gem "pry"
 gem "twitter-text"

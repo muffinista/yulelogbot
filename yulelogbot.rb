@@ -119,7 +119,7 @@ def valid?(row)
   valid = true
   row.each_with_index { |e, idx|
     next if valid == false
-    neighbors = [row[idx - 1] , row[idx - 1]]
+    neighbors = [row[idx - 1] , row[idx + 1]]
     valid = neighbors.all? { |n| (n-e).abs <= MAX_DIFF }
   }
   valid
