@@ -178,7 +178,7 @@ def render_fire
   base.collect { |r| r.join("")  }.join("\n")
 end
 
-@test_mode = true
+@test_mode = false
 
 if @test_mode
   while true
