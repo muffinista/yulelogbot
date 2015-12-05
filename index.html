@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
-  <script src="libraries/lodash.min.js"></script>
-  <script language="javascript" type="text/javascript" src="sketch.js"></script>
+  <script language="javascript" type="text/javascript" src="./libraries/p5.js"></script>
+  <script src="./libraries/lodash.min.js"></script>
+  <script language="javascript" type="text/javascript" src="./sketch.js"></script>
   <style>
    body {
      padding: 0; margin: 0;
@@ -15,10 +15,14 @@
      width: 1200px;
      margin: 0 auto;
    }
+   #fireplace {
+     position: relative;
+     clear: both;
+   }
    #fireplace canvas {
      position: absolute;
      top: 225px;
-     left: 400px;
+     left: 360px;
    }
    img {
      opacity: 0.6;
@@ -43,7 +47,7 @@
 
 <body>
   <div id="fireplace">
-    <img src="background.jpg" />
+    <img src="./background.jpg" />
   </div>
 
   <div id="sounds">
