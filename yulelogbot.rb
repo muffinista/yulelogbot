@@ -60,55 +60,63 @@ MAX_LEVEL = 5
 bot
 bot.config.delete(:db_uri)
 
-
-# remove this to send out tweets
-#debug_mode
-
-# remove this to update the db
-#no_update
-
-# remove this to get less output when running
-#verbose
-
 BASE_CHANGE_CHANCE = 0.5
-@grow_bump = 0.1
+
+
+day = Date.today.day
+@do_shrink = false
+
+if day < 20
+  @grow_bump = 0.1
+elsif day <= 25
+  @grow_bump = 0.15
+else
+  puts "hey we're in cooldown mode"
+  @do_shrink = true
+  @grow_bump = 0.05
+end
 
 def generate(row)
   new_emitters = row.collect { |e|
     chance = BASE_CHANGE_CHANCE + ( (3-e).abs * 0.1)
-    
-    # if rand < chance
-    #   opts = [0]
-    #   opts << 1 if e < MAX_LEVEL
-    #   #opts = [-1]
-    #   opts << -1 if e > 1
-    #   e = e + opts.sample
-    # end
-    
 
-    acted = false
-    if e < MAX_LEVEL
-      chance = BASE_CHANGE_CHANCE + (e*0.1)
-      do_grow = rand > chance - @grow_bump
-      if do_grow
-        e = e + 1
-        acted = true
+    if @do_shrink == true
+      if e == 0
+        e
+      else
+        e = e + [0, 0, 0, 0, -1].sample
+      end
+      # if rand < chance
+      #   opts = [0]
+      #   #opts << 1 if e < MAX_LEVEL
+      #   #opts = [-1]
+      #   opts << -1 if e > 1
+      #   e = e + opts.sample
+      # end
+    else
+      acted = false
+      if e < MAX_LEVEL
+        chance = BASE_CHANGE_CHANCE + (e*0.1)
+        do_grow = rand > chance - @grow_bump
+        if do_grow
+          e = e + 1
+          acted = true
+        end
+      end
+      
+      if ! acted && e > 1
+        #chance = 0.5
+        chance = BASE_CHANGE_CHANCE - (e*0.05)
+        if e == MAX_LEVEL
+          chance = 0.2
+        end
+        do_shrink = rand > chance
+        
+        if do_shrink
+          e = e - 1
+        end
       end
     end
-
-    if ! acted && e > 1
-      #chance = 0.5
-      chance = BASE_CHANGE_CHANCE - (e*0.05)
-      if e == MAX_LEVEL
-        chance = 0.2
-      end
-      do_shrink = rand > chance
-
-      if do_shrink
-        e = e - 1
-      end
-    end
-
     e
   }
   new_emitters
@@ -189,6 +197,7 @@ end
 
 @test_mode = false
 
+
 if @test_mode
   while true
     bot.config[:emitters] ||= [1] * EMITTERS
@@ -204,14 +213,28 @@ if @test_mode
 else
   bot.config[:emitters] ||= [1] * EMITTERS
 
-  bot.config[:emitters] = update_fire
-  puts bot.config[:emitters].inspect
+  do_reset = false
+  last_run = bot.config[:last_run] || 0
 
-  output = render_fire
+  # has it been more than 30 days? reset!
+  if Time.now.to_i - last_run > 3600*24*30
+    do_reset = true
+  end
+  
+  if !do_reset && bot.config[:emitters].select { |val| val > 0 }.count == 0
+    # if the fire went out last round, we're done! see you next year
+  else
+    bot.config[:last_run] = Time.now.to_i
+    
+    bot.config[:emitters] = update_fire
+    puts bot.config[:emitters].inspect
 
-  tweet output
+    output = render_fire
 
-  puts output
+    tweet output
+
+    puts output
+  end
 end
 
 
