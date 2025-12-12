@@ -42,6 +42,24 @@
      color: #660000;
      text-decoration: none;
    }
+
+   #sound-prompt {
+     position: fixed;
+     top: 20px;
+     left: 50%;
+     transform: translateX(-50%);
+     background: rgba(0, 0, 0, 0.8);
+     color: white;
+     padding: 15px 30px;
+     border-radius: 8px;
+     cursor: pointer;
+     font-family: sans-serif;
+     font-size: 18px;
+     z-index: 1000;
+   }
+   #sound-prompt:hover {
+     background: rgba(50, 50, 50, 0.9);
+   }
   </style>
    <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/twitter/twemoji/gh-pages/72x72/1f525.png"/>
 </head>
@@ -52,9 +70,22 @@
     <img src="./background.jpg" />
   </div>
 
-  <div id="sounds">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/lJ3H_SR1dXU?autoplay=1&loop=1&playlist=lJ3H_SR1dXU" frameborder="0" allowfullscreen></iframe>
-  </div>
+  <div id="sounds"></div>
+
+  <div id="sound-prompt" onclick="enableSound()">🔇 Click to enable sound</div>
+
+  <script>
+    function enableSound() {
+      const iframe = document.createElement('iframe');
+      iframe.width = 560;
+      iframe.height = 315;
+      iframe.frameBorder = 0;
+      iframe.allow = 'autoplay';
+      iframe.src = 'https://www.youtube.com/embed/lJ3H_SR1dXU?autoplay=1&loop=1&playlist=lJ3H_SR1dXU';
+      document.getElementById('sounds').appendChild(iframe);
+      document.getElementById('sound-prompt').style.display = 'none';
+    }
+  </script>
 
   <div class="credits">
 
